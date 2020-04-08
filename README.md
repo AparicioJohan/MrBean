@@ -26,6 +26,6 @@ library(MrBean)
 ## Run the Shiny app
 
 ``` r
-mrBean()
+app_MrBean()
 ```
 
