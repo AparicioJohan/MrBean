@@ -1,0 +1,247 @@
+---
+title: "Report Spatial Analysis of Field Trials"
+params:
+  genotipo: !r NA
+  res_ran: !r NA
+  format: !r NA
+  variable: !r NA
+  subset: !r NA
+  varsubset: !r NA
+  levelessub: !r NA
+  fila: !r NA
+  column: !r NA
+author: "This report was generated using MrBean"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: html_document
+---
+
+
+# Summary Variable ```r  params$variable```
+
+
+```{r respo, collapse=TRUE, echo=F, warning=F,message=F ,fig.height=4, fig.align='center'}
+
+# determine if running in Shiny or not
+is_in_shiny <- if(is.null(shiny::getDefaultReactiveDomain())) FALSE else TRUE
+if (is_in_shiny == TRUE) shiny::incProgress(amount = 0.1, message = "Running Model:")
+
+response <- Modelo()$data[,Modelo()$model$response]  
+response %>% data.frame() %>% ggplot(.,aes(x=1,y=response))+geom_violin()+geom_boxplot(width=0.3,outlier.colour = "red", outlier.size = 3, outlier.shape = 8)+theme_bw()+labs(x="",y=params$variable)+coord_flip()
+```
+
+<br>
+
+```{r spo, collapse=TRUE, echo=F, warning=F,message=F, comment=""}
+library(moments)
+n      =round(sum(!is.na(response)),2)
+n.na   =round(sum(is.na(response)),2)
+me     =round(mean(response,na.rm = T),2)
+sd     =round(sd(response,na.rm = T),2)
+cv     =round(sd/abs(me),2)
+Q1     =round(quantile(response,probs = 0.25 ,na.rm = T),2)
+Q2     =round(quantile(response,probs = 0.50 ,na.rm = T),2)
+Q3     =round(quantile(response,probs = 0.75 ,na.rm = T),2)
+min    =round(min(response,na.rm = T),2)
+max    =round(max(response,na.rm = T),2)
+mediana=round(median(response, na.rm = T),2)
+Ske    =round(skewness(response,na.rm = T),2)
+Kurt   =round(kurtosis(response,na.rm = T),2)
+
+data.frame( summary= c("Number of Observations","Number of Missing Observations" ,"Mean" ,"Standard Deviation","Coefficient of Variation","Q1"   ,"Q2"     ,"Q3"   ,"Minimun value"    ,"maximun value" ,"Median", "Skewness", "Kurtosis" ), 
+            value= c(n,n.na   ,me     ,sd     ,cv     ,Q1     ,Q2     ,Q3     ,min    ,max  ,mediana, Ske, Kurt ))
+```
+
+
+\newpage
+
+# Possible Outliers in the response variable
+
+```{r, collapse=TRUE, echo=F, warning=F,message=F, comment=""}
+if (is_in_shiny) shiny::incProgress(amount = 0.1, message = "Outliers response variable:")
+
+    dt <- dts(params$subset,params$varsubset,params$levelessub,data=data())
+    var <- dt[,params$variable]
+    MAD <- MAD_method(var)
+    IQR <- IQR_method(var)
+    
+    dt$col =  dt[,params$column]
+    dt$row = dt[,params$fila]
+    
+    O <- list(MAD,IQR); names(O) <- c("MAD","IQR")
+    
+    datos1 <- dt[c(which(var<O[["MAD"]][1]),which(var>O[["MAD"]][2])),]
+    datos1$Method1 <- "MAD"
+    
+    col <- "col" # Modelo()$terms$spatial$terms.formula$x.coord
+    row <- "row" # Modelo()$terms$spatial$terms.formula$y.coord
+    gen <- params$genotipo
+    
+    datos1 <- datos1[,c(gen,col,row,params$variable,"Method1")]
+    
+    
+    datos2 <- dt[c(which(var<O[["IQR"]][1]),which(var>O[["IQR"]][2])),]
+    datos2$Method2 <- "IQR"
+    
+  
+    datos2 <- datos2[,c(gen,col,row,params$variable,"Method2")]
+    
+    merge(datos1,datos2,by=c(gen,col,row,params$variable), all=T)
+    
+```
+
+
+
+# Spatial Plot:
+
+<center>
+```{r model, collapse=TRUE, echo=F, warning=F,message=F}
+if (is_in_shiny) shiny::incProgress(amount = 0.1, message = "Spatial Plot:")
+plot(Modelo())
+```
+</center>
+
+# Summary / Varcomponents / Effective Dimensions 
+
+```{r summary, collapse=TRUE, echo=F, warning=F,message=F,  comment=""}
+if (is_in_shiny) shiny::incProgress(amount = 0.2, message = "Summary Model:")
+summary(Modelo(),which="all")
+```
+
+
+# 3D Spatial Trend (only HTML format)
+
+
+<center>
+```{r 3d ,  collapse=TRUE, echo=F, warning=F,message=F, comment=""}
+if (is_in_shiny) shiny::incProgress(amount = 0.2, message = "Generating Report:")
+COL     <- obtain.spatialtrend(Modelo())[[1]]
+ROW     <- obtain.spatialtrend(Modelo())[[2]]
+SPATIAL <- obtain.spatialtrend(Modelo())$fit
+p <- plot_ly(x=COL,y=ROW,  z =SPATIAL) %>% add_surface( ) %>%
+  layout(
+    title = "Spatial Trend",
+    scene = list(
+      xaxis = list(title = "Column"),
+      yaxis = list(title = "Row"),
+      zaxis = list(title = "Z"),
+      camera=list(
+        eye = list(x=-1.5, y=-1.5, z=1.2)
+      )
+    ))
+if(params$format=="HTML") 
+  p else return()
+```
+</center>
+
+# TOP 10
+
+```{r ,  collapse=TRUE, echo=F, warning=F,message=F , comment=""}
+if (is_in_shiny) shiny::incProgress(amount = 0.2, message = "Finding Outliers:")
+library(tidyverse)
+library(kableExtra)
+BLUPS <- predict(Modelo(),  which =  params$genotipo)[,c(params$genotipo,"predicted.values","standard.errors")]
+      names(BLUPS) <- if(isTRUE(params$res_ran)) c("Line","BLUPs","Standard.errors") else  c("Line","BLUEs","Standard.errors") 
+head( arrange(BLUPS, desc(get(names(BLUPS)[2]))), 10 )
+```
+
+
+## Heritability ($h^2$)
+```{r ,  collapse=TRUE, echo=F, warning=F,message=F , comment=""}
+as.numeric(getHeritability(Modelo()))
+```
+
+
+## Genotypic Variance ($\sigma^2_{gen}$)
+```{r ,  collapse=TRUE, echo=F, warning=F,message=F , comment=""}
+as.numeric(Modelo()$var.comp[params$genotipo])
+```
+
+## Residual Variance ($\sigma^2_e$)
+```{r ,  collapse=TRUE, echo=F, warning=F,message=F , comment=""}
+as.numeric(round((Modelo()$psi[1]),2))
+```
+
+
+## Genotypic Coefficient of Variation  ($\sigma_{gen}/\overline{x}$)
+```{r,  collapse=TRUE, echo=F, warning=F,message=F , comment=""}
+me <- mean(blup()[,2],na.rm = TRUE)
+sd <- sqrt(Modelo()$var.comp[params$genotipo])
+
+as.numeric(round(sd/me,2))
+```
+
+
+# Information about the Model
+
+```{r, collapse=TRUE, echo=F, warning=F,message=F , comment=""}
+A=AIC.SpATS(Modelo())
+B=BIC.SpATS(Modelo())
+log.l=Modelo()$deviance/-2  
+Dev=Modelo()$deviance  
+n.var= length(Modelo()$var.comp) + 1 
+r.sq=as.numeric(R.square(Modelo()))
+
+data.frame(AIC=A,BIC=B,Log.lik=log.l,Deviance=Dev, r2=r.sq,  Varcomp=n.var)
+
+```
+
+
+
+# Residuals
+
+<center>
+```{r, collapse=TRUE, echo=F, warning=F,message=F , comment="", fig.align="center"}
+autoplot.SpATS(Model = Modelo(), alpha=0.2)
+```
+</center>
+
+## Residuals  ($\pm 3\sigma$)
+
+<center>
+```{r, collapse=TRUE, echo=F, warning=F,message=F , comment="", fig.height=3, fig.width=4,fig.align="center"}
+ VarE<- Modelo()$psi[1]   
+      Data <- data.frame(Index=1:length(residuals(Modelo())), Residuals=residuals(Modelo()))
+      u <- +3*sqrt(VarE)
+      l <- -3*sqrt(VarE)
+      Data$Classify <- NA
+      Data$Classify[which(abs(Data$Residuals)>=u)] <- "Outlier" 
+      Data$Classify[which(abs(Data$Residuals)<u)  ] <- "Normal"
+      filter(Data,!is.na(Classify)) %>% 
+        ggplot(aes(x=Index,y=Residuals,color=Classify))+geom_point(size=2,alpha = 0.3)+ theme_bw()+
+        theme(legend.position = "top") +
+        scale_color_manual(values=c("grey80", "red"))+
+        geom_hline(yintercept = u,color="red")+geom_hline(yintercept = l,color="red")+
+        geom_hline(yintercept = 0,linetype="dashed")->k
+      k
+```
+</center>
+
+
+```{r, collapse=TRUE, echo=F, warning=F,message=F , comment=""}
+      dt <- dts(params$subset,params$varsubset,params$levelessub,data=data())
+      VarE<- Modelo()$psi[1]   
+      Data <- data.frame(Index=1:length(residuals(Modelo())), Residuals=residuals(Modelo()))
+      u <- +3*sqrt(VarE)
+      l <- -3*sqrt(VarE)
+      p <- which(abs(Data$Residuals)>u)
+        
+      
+      dt$col =  dt[,params$column]
+      dt$row = dt[,params$fila]
+    
+      col <- "col"
+      row <- "row"
+      gen <- params$genotipo
+      
+      datos <-dt[p,c(gen,col,row,params$variable)]
+
+      if(dim(datos[1])==0) {
+        cat("No Extreme Residuals")
+        } else { datos }
+```
+
+
+
+
+
+

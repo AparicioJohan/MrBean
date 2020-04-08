@@ -1,0 +1,154 @@
+.main-header .logo {
+  font-family: "Open Sans", "Helvetica Neue", Arial, sans-serif;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.skin-blue .main-header .logo {
+background-color: #3c8dbc;
+ }
+
+.skin-blue .main-header .logo:hover {
+ background-color: #3c8dbc;
+ }
+ 
+/* 
+.sidebar {
+  color: #FFF;
+  position: fixed;
+  width: 220px;
+  white-space: nowrap;
+  overflow: visible;
+}
+ */
+.main-header {
+  position: fixed;
+  width:100%;
+}
+.content {
+  margin-top: 50px;
+}
+
+
+
+ /* main sidebar */
+ .skin-blue .main-sidebar {
+  background-color: #34495E;
+ }
+ 
+/* other links in the sidebarmenu */
+ /* active selected tab in the sidebarmenu */
+.skin-blue .main-sidebar .sidebar .sidebar-menu .active a{
+background-color: #34495E;
+}
+
+/* Cambiar Colores ------------------------ -----------  */
+
+ /* logo   */
+ .skin-blue .main-header .logo {
+ background-color: #337ab7;
+ }
+
+ /* logo when hovered */
+ .skin-blue .main-header .logo:hover {
+ background-color: #337ab7;
+ }
+
+ /* navbar (rest of the header) */
+ .skin-blue .main-header .navbar {
+ background-color: #337ab7;
+ }
+ /* toggle button when hovered  */
+ .skin-blue .main-header .navbar .sidebar-toggle:hover{
+ background-color: #0073b7;
+ }
+           
+/*  Color BOX */           
+.box.box-solid.box-primary>.box-header {
+background:#337ab7;
+}
+
+/* Color menu item */
+
+.skin-blue .sidebar-menu > li.active > a, .skin-blue .sidebar-menu > li:hover > a {
+    color: #fff;
+    background: #34495E;
+        background-color: rgb(52, 73, 94);
+    border-left-color: #337ab7;
+}
+
+/* -------------------------------------- */
+
+
+/*  Value BOx */
+
+.img-local { }
+                      
+ .small-box .img-local {
+ position: absolute;
+ top: auto;
+ bottom: 5px;
+ right: 5px;
+ z-index: 0;
+ font-size: 70px;
+ color: rgba(0, 0, 0, 0.15);
+ }
+
+
+
+.sidebar-collapse .left-side, .sidebar-collapse .main-sidebar{   
+  transform: translate(0,0);
+    width: 70px;
+    /* transition: transform 1s, width 1s;*/
+}
+
+ /* 
+.main-sidebar, .left-side
+{
+  transition: transform 1s, width 1s;
+}  */
+
+body.sidebar-collapse .hide_when_sidebar_collapsed {
+    display: none;
+}
+
+
+.app.nav-collapsed-min #nav > li > a {
+    padding: 15px 15px;
+    text-align: center;
+}
+
+
+ /* logo 
+    .skin-blue .main-header .logo {
+    background-color: #337ab7;
+    }
+
+    /* logo when hovered 
+    .skin-blue .main-header .logo:hover {
+    background-color: #337ab7;
+    }
+
+    /* navbar (rest of the header) 
+    .skin-blue .main-header .navbar {
+    background-color: #337ab7;
+    }
+    /* toggle button when hovered  
+    .skin-blue .main-header .navbar .sidebar-toggle:hover{
+           background-color: #0073b7;
+           }
+           
+           
+.box.box-solid.box-primary>.box-header {
+background:#337ab7;
+               }
+*/
+
+
+
+.text-muted {
+    color: #fff;
+}
+
+
+                                  

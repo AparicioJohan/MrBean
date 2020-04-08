@@ -1,0 +1,16 @@
+.sidebar-collapse .left-side, .sidebar-collapse .main-sidebar{   
+  transform: translate(0,0);
+    width: 40px;
+    transition: transform 1s, width 1s;
+}
+
+
+.collapsed_text {   
+  color: black;
+  
+}
+
+.main-sidebar, .left-side
+{
+  transition: transform 1s, width 1s;
+}
