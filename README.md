@@ -4,14 +4,19 @@ Is a web application for simplifying the analysis of large-scale plant breeding 
 
 ## Installation
 
+If you do not have installed `devtools` package, first it is necessary :
+
+
+``` r
+install.packages("devtools")
+```
+
+and then
+
 ``` r
 devtools::install_github("AparicioJohan/MrBean")
 ```
-or ...
 
-``` r
-source("https://install-github.me/AparicioJohan/MrBean")
-```
 
 ``` r
 library(MrBean)
