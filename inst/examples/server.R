@@ -1,9 +1,4 @@
 
-# pack <- c("shiny", "shinydashboard","plotly", "datasets", "SpATS", "lme4", "tools","readxl","shinyBS","purrr",
-#            "GGally","ggpubr","corrplot","missMDA","FactoMineR","factoextra","psych","ggpmisc","lmerTest","car",
-#            "data.table","shinytoastr","broom.mixed","shinyjs","DT"," ggvis","shinyalert","shinycssloaders","shinyWidgets",
-#           "rintrojs","dplyr","shinydashboardPlus","robustbase")
-# suppressWarnings(pacman::p_load(pack))
 
 source("https://raw.githubusercontent.com/AparicioJohan/SpATS.plus/master/All_additional.R")     # SpATS PLUS
 
