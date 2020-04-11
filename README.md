@@ -29,3 +29,16 @@ library(MrBean)
 app_MrBean()
 ```
 
+## Demo
+
+A running demo is on [shinyapps.io](https://beanteam.shinyapps.io/MrBean_v01/).
+
+<div class="marvel-device macbook">
+    <div class="top-bar" width=></div>
+    <div class="camera"></div>
+    <div class="screen">
+             <iframe width="100%" src="https://beanteam.shinyapps.io/MrBean_v01/" allowfullscreen=""  scrolling="yes"  height="100%"></iframe>
+    </div>
+    <div class="bottom-bar"></div>
+</div>
+
