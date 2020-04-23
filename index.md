@@ -29,6 +29,9 @@ library(MrBean)
 app_MrBean()
 ```
 
+## Lastest version
+If you want to have the latest version send me a message <a href = "mailto: j.aparicio@cgiar.org">Send Email</a>
+
 ## Demo
 
 A running demo is on [shinyapps.io](https://beanteam.shinyapps.io/MrBean_v01/).
