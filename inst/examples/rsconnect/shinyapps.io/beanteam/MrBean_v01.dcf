@@ -1,0 +1,12 @@
+name: MrBean_v01
+title:
+username:
+account: beanteam
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2097934
+bundleId: 3055879
+url: https://beanteam.shinyapps.io/MrBean_v01/
+when: 1587663430.04708
+asMultiple: FALSE
+asStatic: FALSE
